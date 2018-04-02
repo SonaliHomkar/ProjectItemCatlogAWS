@@ -1,0 +1,16 @@
+	import os
+import sys
+
+activatethis = "/usr/share/ProjectItemCatlog/venv/bin/activate_this.py"
+#print("path " + activatethis)
+
+exec(activatethis,dict(__filename__=activatethis))
+
+sys.stdout = sys.stderr
+
+sys.path.insert(0,os.path.join(os.path.dirname(os.path.realpath(__file__)),'../..'))
+
+sys.path.append('/usr/share/ProjectItemCatlog/')
+
+from ProjectItemCatlog.run import app as application
+
