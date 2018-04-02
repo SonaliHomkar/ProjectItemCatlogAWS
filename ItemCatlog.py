@@ -502,75 +502,75 @@ def gconnect():
 
         # check that access token is valid
         try:
-            	strUrl = "https://www.googleapis.com/oauth2/v1" \
-                     		"/tokeninfo?access_token=%s"
-            	access_token = credentials.access_token
-            	url = (strUrl % access_token)
-            	h = httplib2.Http() 
-            	result = json.loads(h.request(url, 'GET')[1])
-            	# If there was an error in the access token info,  abort.
-            	if result.get('error') is not None:
-                	response = make_response(json.dumps(result.get('error')), 501)
-                	response.headers['Content-Type'] = 'application/json'
-                	return response
-            	# Verify that the access token is used for the intended user.
-            	gplus_id = credentials.id_token['sub']
-            	if result['user_id'] != gplus_id:
-                        strmsg = "Token's user id doesn't match given user id"
-                        response = make_response(json.dumps(strmsg), 401)
-                        response.headers['Content-Type'] = 'application/json'
-                        return response
-            	# Verify that the access token is valid for this app.
-            	if result['issued_to'] != CLIENT_ID:
-                	response = make_response(json.dumps("Token's clinet id" +
-                                                                "doesn't match " +
-                                                                "app's id"), 401)
-                        print ("Token's id doesn't match app's id")
-                    	response.headers['Content-Type'] = 'application/json'
-                    	return response
-            	# check to see if the user is already logged in
-            	stored_access_token = login_session.get('access_token')
-            	stored_gplus_id = login_session.get('gplus_id')
-            	if stored_access_token is not None and gplus_id == stored_gplus_id:
-                	login_session['provider'] = "google"
-                	response = make_response(
-                    			json.dumps('Current user is already connected.'), 200)
-                	response.headers['Content-Type'] = 'application/json'
-                	return response
-            	# Store the access token in the session for later use.
-            	login_session['access_token'] = credentials.access_token
-            	login_session['gplus_id'] = gplus_id
-            	# Get user info
-            	userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
-            	params = {'access_token': credentials.access_token,  'alt': 'json'}
-            	answer = requests.get(userinfo_url,  params=params)
-            	data = answer.json()
-            	login_session['provider'] = "google"
-            	login_session['username'] = data['name']
-            	login_session['picture'] = data['picture']
-            	login_session['email'] = data['email']
-            	user_id = getUserId(login_session['username'])
-            	# return "user id : " + user_id
-            	if not user_id:
-                	user_id = createUser(login_session)
-                	strUser = "New User"
-            	else:
-                	strUser = ("User Already exist")
+            strUrl = "https://www.googleapis.com/oauth2/v1"
+            strUrl += "/tokeninfo?access_token=%s"
+            access_token = credentials.access_token
+            url = (strUrl % access_token)
+            print(url)
+            h = httplib2.Http()
+            result = json.loads(h.request(url, 'GET')[1])
+            # If there was an error in the access token info,  abort.
+            if result.get('error') is not None:
+                response = make_response(json.dumps(result.get('error')), 501)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+            # Verify that the access token is used for the intended user.
+            gplus_id = credentials.id_token['sub']
+            if result['user_id'] != gplus_id:
+                strmsg = "Token's user id doesn't match given user id"
+                response = make_response(json.dumps(strmsg), 401)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+            # Verify that the access token is valid for this app.
+            if result['issued_to'] != CLIENT_ID:
+                strmsg = "Token's client id doesn't match app's id"
+                response = make_response(json.dumps(strmsg), 401)
+                print ("Token's id doesn't match app's id")
+                response.headers['Content-Type'] = 'application/json'
+                return response
+            # check to see if the user is already logged in
+            stored_access_token = login_session.get('access_token')
+            stored_gplus_id = login_session.get('gplus_id')
+            if stored_access_token is not None and gplus_id == stored_gplus_id:
+                login_session['provider'] = "google"
+                strmsg = "Current user is already connected"
+                response = make_response(json.dumps(strmsg), 200)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+            # Store the access token in the session for later use.
+            login_session['access_token'] = credentials.access_token
+            login_session['gplus_id'] = gplus_id
+            # Get user info
+            userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+            params = {'access_token': credentials.access_token,  'alt': 'json'}
+            answer = requests.get(userinfo_url,  params=params)
+            data = answer.json()
+            login_session['provider'] = "google"
+            login_session['username'] = data['name']
+            login_session['picture'] = data['picture']
+            login_session['email'] = data['email']
+            user_id = getUserId(login_session['username'])
+            # return "user id : " + user_id
+            if not user_id:
+                user_id = createUser(login_session)
+                strUser = "New User"
+            else:
+                strUser = ("User Already exist")
 
-            	login_session['user_id'] = user_id
-            	output = ''
-            	output += '<h1>Welcome,  '
-           	output += login_session['username']
-            	output += '!</h1>'
-            	output += '<img src="'
-            	output += login_session['picture']
-            	output += 'status : ' + strUser
-            	output += ' " style = "width: 300px; height: 300px; \
-                    		border-radius: 150px;-webkit-border-radius: 150px; \
-                    		-moz-border-radius: 150px;"> '
-            	flash("you are now logged in as %s" % login_session['username'])
-            	print ("done!")
-            	return output
+            login_session['user_id'] = user_id
+            output = ''
+            output += '<h1>Welcome,  '
+            output += login_session['username']
+            output += '!</h1>'
+            output += '<img src="'
+            output += login_session['picture']
+            output += 'status : ' + strUser
+            output += ' " style = "width: 300px; height: 300px;'
+            output += 'border-radius: 150px;-webkit-border-radius: 150px;'
+            output += '-moz-border-radius: 150px;"> '
+            flash("you are now logged in as %s" % login_session['username'])
+            print ("done!")
+            return output
         except:
             # e = sys.exc_info()[0]
             return traceback.print_exc()
@@ -631,5 +631,5 @@ def getUserId(username):
 
 
 if __name__ == "__main__":
-	app.run
-	
+    app.run
+    
