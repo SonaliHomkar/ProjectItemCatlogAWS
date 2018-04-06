@@ -1,4 +1,3 @@
-
 # import database and sqlalchemy for CRUD operations #
 import re
 import sys
@@ -8,8 +7,8 @@ import hmac
 import random
 import hashlib
 import os
-from ItemCatlog_configPath import DBPATH,CLIENT_FILE
-from string import ascii_letters, ascii_uppercase,  digits
+from ItemCatlog_configPath import DBPATH, CLIENT_FILE
+from string import ascii_letters, ascii_uppercase, digits
 from database_setup import Base, Category, Item, User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -507,7 +506,7 @@ def gconnect():
             print(url)
             h = httplib2.Http()
             req = h.request(url, 'GET')[1]
-            req_json = req.decode('utf8').replace("'",'"')
+            req_json = req.decode('utf8').replace("'", '"')
             result = json.loads(req_json)
             # If there was an error in the access token info,  abort.
             if result.get('error') is not None:
@@ -632,4 +631,3 @@ def getUserId(username):
 
 if __name__ == "__main__":
     app.run
-    
