@@ -33,7 +33,7 @@ Steps for creating new user on light server
 10. ssh-keygen
 11. copy the public key on /home/testuser/.ssh/
 12. sudo service ssh restart
-13. ssh testuser@35.154.232.14 -v (filepath to private key)
+13. ssh testuser@35.154.232.14 -i <filepath to private key>
 14. Private key is attached to notes reviewer field
 
 softwares installed
