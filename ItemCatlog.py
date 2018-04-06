@@ -482,24 +482,22 @@ def gconnect():
     if request.method == 'POST':
         # Validate state token
         if request.args.get('state') != login_session['state']:
-            response = make_response(json.dumps
-                                     ('Invalid state parameter'), 401)
+            strmsg = "Invalid state parameter"
+            response = make_response(json.dumps(strmsg), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
         # Obtain authorization code
         code = request.data
         try:
             strScope = 'https://www.googleapis.com/auth/gmail.readonly'
-            oauth_flow = flow_from_clientsecrets(CLIENT_FILE,
-                                                 scope=strScope)
+            oauth_flow = flow_from_clientsecrets(CLIENT_FILE, scope=strScope)
             oauth_flow.redirect_uri = 'postmessage'
             credentials = oauth_flow.step2_exchange(code)
         except FlowExchangeError:
-            response = make_response(json.dumps('Failed to upgrade' +
-                                                'the authorization code'), 401)
+            strmsg = "Failed to upgrade the authorization code"
+            response = make_response(json.dumps(strmsg), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
-
         # check that access token is valid
         try:
             strUrl = "https://www.googleapis.com/oauth2/v1"
@@ -508,7 +506,9 @@ def gconnect():
             url = (strUrl % access_token)
             print(url)
             h = httplib2.Http()
-            result = json.loads(h.request(url, 'GET')[1])
+            req = h.request(url, 'GET')[1]
+            req_json = req.decode('utf8').replace("'",'"')
+            result = json.loads(req_json)
             # If there was an error in the access token info,  abort.
             if result.get('error') is not None:
                 response = make_response(json.dumps(result.get('error')), 501)
