@@ -16,9 +16,6 @@ Prerequisites
 6. oauth2client
 7. flask
 
-
-
-
 Steps for creating new user on light server
 ============================================
 1. sudo adduser new_user --disabled-password
@@ -154,6 +151,9 @@ using URL http://ec2-35-154-232-14.ap-south-1.compute.amazonaws.com/<int:cat_id>
 15. Also the user is allowed to delete category 
 using URL http://ec2-35-154-232-14.ap-south-1.compute.amazonaws.com/<int:cat_id>/DeleteItem/
 
-
+Resources used for reference
+===========================
+1. https://www.youtube.com/watch?v=x6SvecADw2M
+2. https://aws.amazon.com/premiumsupport/knowledge-center/new-user-accounts-linux-instance/
 
 	
